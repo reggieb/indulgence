@@ -1,3 +1,4 @@
+ENV["RAILS_ENV"] = "test"
 $:.unshift File.join(File.dirname(__FILE__),'units')
 $:.unshift File.join(File.dirname(__FILE__),'lib')
 $:.unshift File.join(File.dirname(__FILE__),'..','lib','indulgence')

@@ -4,9 +4,8 @@ class ThingPermission < Indulgence::Permission
   
   def abilities
     {
-      default: default,
       god: default.merge(god),
-
+      demigod: default.merge(demigod)
     }
   end
   
@@ -27,6 +26,19 @@ class ThingPermission < Indulgence::Permission
       update: all,
       delete: all
     }
+  end
+  
+  def demigod
+    {
+      create: things_they_own,
+      read: all,
+      update: things_they_own,
+      delete: things_they_own
+    }
+  end
+  
+  def things_they_own
+    
   end
   
 end

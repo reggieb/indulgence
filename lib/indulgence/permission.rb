@@ -5,11 +5,15 @@ module Indulgence
     def initialize(entity)
       self
       @entity = entity
-      replace abilities[role_name]
+      replace abilities[role_name] || default
     end
 
     def abilities
-      raise "needs to be defined"
+      raise "Indulgence#abilities needs to be defined"
+    end
+    
+    def default
+      raise 'There must always be an Indulgence#default'
     end
     
     def self.role_method=(name)
@@ -29,11 +33,11 @@ module Indulgence
     end
 
     def self.none
-      :none
+      nil
     end
 
     def self.all
-      :all
+      true
     end
 
     # Ensure passing an unknown key behaves as one would expect for a hash 
