@@ -1,1 +1,2 @@
 .rvmrc
+test/db/*.db
