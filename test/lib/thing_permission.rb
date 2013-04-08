@@ -1,8 +1,7 @@
 require 'indulgence'
 
 class ThingPermission < Indulgence::Permission
-
-    
+  
   def abilities
     {
       default: default,
