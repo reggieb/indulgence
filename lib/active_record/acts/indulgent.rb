@@ -6,9 +6,10 @@ module ActiveRecord
       end
       
       module ClassMethods
-        def acts_as_indulgent
+        def acts_as_indulgent(permission_klass)
           include Indulgence::Indulgent::InstanceMethods
           extend Indulgence::Indulgent::ClassMethods
+          @indulgent_permission_class = permission_klass
         end
         
       end
