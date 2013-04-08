@@ -27,6 +27,12 @@ class ThingTest < Test::Unit::TestCase
     assert_equal(true, @thing.indulge?(@owner, :delete))    
   end
   
+  def test_indulge_other_thing
+    other_thing = OtherThing.create(:name => 'Other Stuff', :owner_id => @owner.id)
+    assert_equal(true, other_thing.indulge?(@owner, :read))
+    assert_equal(false, other_thing.indulge?(@owner, :delete))
+  end
+  
   def teardown
     Role.delete_all
     User.delete_all
