@@ -41,14 +41,14 @@ module Indulgence
     end
 
     def self.none
-      define_ability(
+      @none ||= define_ability(
         :name => :none,
         :truth => false
       )
     end
 
     def self.all
-      define_ability(
+      @all ||= define_ability(
         :name => :all,
         :truth => true
       )

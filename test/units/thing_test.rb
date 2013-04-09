@@ -57,6 +57,33 @@ class ThingTest < Test::Unit::TestCase
     end
   end
   
+  def test_find
+    make_second_thing
+    @owner.update_attribute(:role_id, @demigod.id)
+    assert_equal(@thing, Thing.indulgence(@owner, :delete).find(@thing.id))
+    assert_raise ActiveRecord::RecordNotFound do
+      assert_equal(@thing, Thing.indulgence(@user, :delete).find(@thing.id))
+    end
+  end
+  
+  def test_truth_method
+    make_second_thing
+    assert_equal(true, @thing.permit?(@owner, :read))
+    assert_equal(false, @thing.permit?(@owner, :delete))
+    assert_equal(false, @other_thing.permit?(@owner, :delete))
+  end
+  
+  def test_where_method
+    make_second_thing
+    @owner.update_attribute(:role_id, @demigod.id)
+    assert_equal(Thing.order('id'), Thing.permitted(@owner, :read).order('id'))
+    assert_equal(Thing.order('id'), Thing.permitted(@user, :read).order('id'))
+    assert_equal([@thing], Thing.permitted(@owner, :delete))
+    assert_raise ActiveRecord::RecordNotFound do
+      Thing.permitted(@user, :delete)
+    end
+  end
+  
   def make_second_thing
     @user = User.create(:name => 'Clive')
     @other_thing = Thing.create(:name => 'Debris', :owner_id => @user.id)
