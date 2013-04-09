@@ -20,9 +20,7 @@ succinctly within a single file.
 Indulgence is added to a class via acts_as_indulgent:
 
     class Thing < ActiveRecord::Base
-
       acts_as_indulgent
-
     end
 
 Used in this way, permissions need to be defined in an Indulgence::Permission
@@ -83,7 +81,7 @@ Simple true/false permission can be determined using the :indulge? method:
 
 == indulgence
 
-The indulgence method is used as a where filter:
+The :indulgence method is used as a where filter:
 
     Thing.indulgence(user, :create) --> raises ActiveRecord::RecordNotFound
     Thing.indulgence(user, :read) == Thing.all
@@ -125,13 +123,13 @@ And then defining what they can do by adding these two methods to ThingPermissio
     end
 
 This uses a merger of the default abilities so that only the variant abilities
-need to be defined in the emperor method. That is, read is inherited from 
-default rather than being defined in emperor, as it is already set to 'all'.
+need to be defined in the emperor method. That is, _read_ is inherited from 
+_default_ rather than being defined in _emperor_, as it is already set to *all*.
 
 abilities is a hash of hashes. The lowest level, associates action names with
 ability objects. The top level associates role names to the lower level ability 
-object hashes. The construction is perhaps clearer in this simple case, if this 
-were written like this:
+object hashes. The construction is perhaps clearer in the abilities above was
+written like this:
 
     def abilities
       {
@@ -168,7 +166,7 @@ their own things.
     author = Role.create(:name => :author)
 
 Next we need to give author's ownership of things. So we add an :author_id 
-attribute to Thing, and a matching author method:
+attribute to Thing, and a matching :author method:
 
     class Thing < ActiveRecord::Base
       acts_as_indulgent
@@ -201,14 +199,14 @@ In this example:
 
     Thing.indulgence(user, :read) == Thing.where(:author_id => user.id)
 
-if the :read ability is matched to things_they_wrote
+if the :read ability is matched to *things_they_wrote*
 
 ==== truth
 
-In *all* truth is simply _true_, and in *none* truth is _false_.
+In *all* :truth is simply _true_, and in *none* :truth is _false_.
 
-For more complex abilities truth should be a lambda that is passed the object 
-being tested, and returns true if permission should be given. Otherwise false 
+For more complex abilities :truth should be a lambda that is passed the object 
+being tested, and returns _true_ if permission should be given. Otherwise _false_ 
 should be returned.
 
 Once *things_they_wrote* has been defined, we can use it to define a new set
@@ -248,3 +246,65 @@ With that done:
     Thing.indulgence(cicero, :read)   == Thing.all
     Thing.indulgence(cicero, :update) == [thing]
     Thing.indulgence(cicero, :delete)  --> raises ActiveRecord::RecordNotFound
+
+=== Alternative Permission Class
+
+As stated above, the default behaviour is for a Thing class to expect its
+permissions to be defined in ThingPermission. However, you can define an 
+alternative class name:
+
+    acts_as_indulgent :using => PermissionsForThing
+
+=== Alternative Entity behaviour
+
+Consider this example:
+
+    class User < ActiveRecord::Base 
+      belongs_to :position
+    end
+
+    class Position < ActiveRecord::Base
+      has_many :users
+      validates :title, :uniqueness => true
+    end
+
+There are two ways of dealing with this. 
+
+If only ThingPermission is affected, the attribute that stores the _role_method_ 
+and _role_name_method_ could be overwritten:
+
+    class ThingPermission < Indulgence::Permission
+      def self.role_method
+        :position
+      end
+
+      def self.role_name_method
+        :title
+      end
+
+      .....
+    end
+
+Alternatively if all permissions were to be altered the super class Permission 
+could be updated (for example in a rails initializer):
+
+    Indulgence::Permission.role_method = :position
+    Indulgence::Permission.role_name_method = :title
+
+=== Alternative method names
+
+The method names _indulgence_ and _indulge?_ may not suit your application. If
+you wish to use alternative names, they can be aliased like this:
+
+    acts_as_indulgent(
+      :truth_method => :permit?,
+      :where_method => :permitted
+    )
+
+With this place in Thing, we can do this:
+
+    thing.permit?(cicero, :update) == true
+    thing.permit?(cicero, :delete) == false
+
+    Thing.permitted(cicero, :create) == [thing]
+    Thing.permitted(cicero, :read)   == Thing.all
