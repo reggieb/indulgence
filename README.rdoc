@@ -1,5 +1,250 @@
-= indulgence
+= Indulgence
 
-Yet another permissions gem
+Yet another permissions gem.
 
+In creating Indulgence I wanted a role based permissions tool that did two main 
+things:
 
+* Determine what permission a user had to do something to an object
+* Filtered a search of objects based on the those permissions
+
+It was apparent to me that if 'something' was one of the CRUD actions, it would
+cover all the use cases I could think of. So permissions were sub-divided into
+the 'abilities': create, read, update, and delete.
+
+The other requirement was that the permission for an object could be defined
+succinctly within a single file.
+
+== Defining indulgent permissions
+
+Indulgence is added to a class via acts_as_indulgent:
+
+    class Thing < ActiveRecord::Base
+
+      acts_as_indulgent
+
+    end
+
+Used in this way, permissions need to be defined in an Indulgence::Permission
+object called ThingPermission, with an instance method :default
+
+    class ThingPermission < Indulgence::Permission
+
+      def default
+        {
+          create: none,
+          read: all,
+          update: none,
+          delete: none
+        }
+      end
+
+    end
+
+This needs to be available to the Thing class. For example, in a rails app, by
+placing it in app/permissions/thing_permission.rb
+
+== Users and Roles
+
+Indulgence assumes that permissions will be tested against an entity object
+(e.g. User), that has a role object associated with it, and that each role can 
+be uniquely identified by a name method.
+
+The default behaviour assumes that the entity object has a :role method that
+returns the role object, and that the role object has a :name method. So
+typically, these objects could look like this:
+
+    class User < ActiveRecord::Base 
+      belongs_to :role
+    end
+
+    class Role < ActiveRecord::Base
+      has_many :users
+      validates :name, :uniqueness => true
+    end
+    
+    role = Role.create(:name => 'pleb')
+    user = User.create(
+      :first_name => 'Joe', 
+      :last_name => 'Blogs',
+      :role_id => role.id
+    ) 
+
+== indulge?
+
+Simple true/false permission can be determined using the :indulge? method:
+
+    thing = Thing.first
+
+    thing.indulge?(user, :create) == false
+    thing.indulge?(user, :read)   == true
+    thing.indulge?(user, :update) == false
+    thing.indulge?(user, :delete) == false
+
+== indulgence
+
+The indulgence method is used as a where filter:
+
+    Thing.indulgence(user, :create) --> raises ActiveRecord::RecordNotFound
+    Thing.indulgence(user, :read) == Thing.all
+    Thing.indulgence(user, :update) --> raises ActiveRecord::RecordNotFound
+    Thing.indulgence(user, :delete) --> raises ActiveRecord::RecordNotFound
+
+So to find all the blue things that the user has permission to read:
+
+    Thing.indulgence(user, :read).where(:colour => 'blue')
+
+== Customisation
+
+=== Adding other roles
+
+Up until now, all users get the same permissions irrespective of role. Let's
+give Emperors the right to see and do anything by first creating an emperor
+
+    emperor = Role.create(:name => 'emperor')
+    caesar = User.create(
+      :first_name => 'Julius', 
+      :last_name => 'Ceasar',
+      :role_id => emporor.id
+    )
+
+And then defining what they can do by adding these two methods to ThingPermission:
+
+    def abilities
+      {
+        emperor: default.merge(emperor)
+      }
+    end
+
+    def emperor
+      {
+        create: all,
+        update: all,
+        delete: all
+      }
+    end
+
+This uses a merger of the default abilities so that only the variant abilities
+need to be defined in the emperor method. That is, read is inherited from 
+default rather than being defined in emperor, as it is already set to 'all'.
+
+abilities is a hash of hashes. The lowest level, associates action names with
+ability objects. The top level associates role names to the lower level ability 
+object hashes. The construction is perhaps clearer in this simple case, if this 
+were written like this:
+
+    def abilities
+      {
+        emperor: {
+          create: all,
+          read:   default[:read],
+          update: all,
+          delete: all
+        }
+      }         
+    end
+
+With this done:
+
+    thing.indulge?(caesar, :create) == true
+    thing.indulge?(caesar, :read)   == true
+    thing.indulge?(caesar, :update) == true
+    thing.indulge?(caesar, :delete) == true
+
+    Thing.indulgence(caesar, :create) == Thing.all
+    Thing.indulgence(caesar, :read)   == Thing.all
+    Thing.indulgence(caesar, :update) == Thing.all
+    Thing.indulgence(caesar, :delete) == Thing.all
+
+=== Adding abilities
+
+Indulgence has two built in abilities. These are *all* and *none*. These two
+have provided all the functionality described above, but in most real cases
+some more fine tuned ability setting will be needed.
+
+Let's create an author role, and give authors the ability to create and update
+their own things. 
+
+    author = Role.create(:name => :author)
+
+Next we need to give author's ownership of things. So we add an :author_id 
+attribute to Thing, and a matching author method:
+
+    class Thing < ActiveRecord::Base
+      acts_as_indulgent
+      belongs_to :author, :class_name => 'User'
+    end
+
+Then we need to create an Ability that uses this relationship to determine
+permissions. This can be done by adding this method to ThingPermission:
+
+  def things_they_wrote
+    define_ability(
+      :name => :things_they_wrote,
+      :truth => lambda {|thing| thing.author_id == entity.id},
+      :where_clause => {:author_id => entity.id}
+    )
+  end
+
+This will create an Ability object with the following methods:
+
+[name]          Allows abilities with identical functionality to be matched
+[truth]         Used by :indulge?
+[where_clause]  Used by :indulgence 
+
+Note that Indulgence::Permission#entity returns the entity object passed to the 
+instance on creation. In this example, that will be the User.
+
+==== The where clause
+
+In this example: 
+
+    Thing.indulgence(user, :read) == Thing.where(:author_id => user.id)
+
+if the :read ability is matched to things_they_wrote
+
+==== truth
+
+In *all* truth is simply _true_, and in *none* truth is _false_.
+
+For more complex abilities truth should be a lambda that is passed the object 
+being tested, and returns true if permission should be given. Otherwise false 
+should be returned.
+
+Once *things_they_wrote* has been defined, we can use it to define a new set
+of abilities:
+
+    def abilities
+      {
+        emperor: default.merge(emperor),
+        author:  default.merge(author)
+      }
+    end
+
+    def author
+      {
+        create: things_they_wrote,
+        update: things_they_wrote
+      }
+    end
+
+With that done:
+
+    cicero = User.create(
+      :first_name => 'Marcus', 
+      :last_name => 'Cicero', 
+      :role_id => author.id
+    )
+
+    thing.author = cicero
+    thing.save
+
+    thing.indulge?(cicero, :create) == true
+    thing.indulge?(cicero, :read)   == true
+    thing.indulge?(cicero, :update) == true
+    thing.indulge?(cicero, :delete) == false
+
+    Thing.indulgence(cicero, :create) == [thing]
+    Thing.indulgence(cicero, :read)   == Thing.all
+    Thing.indulgence(cicero, :update) == [thing]
+    Thing.indulgence(cicero, :delete)  --> raises ActiveRecord::RecordNotFound
