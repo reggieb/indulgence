@@ -22,7 +22,6 @@ class ThingPermission < Indulgence::Permission
   def god
     {
       create: all,
-      read: all,
       update: all,
       delete: all
     }
@@ -31,14 +30,17 @@ class ThingPermission < Indulgence::Permission
   def demigod
     {
       create: things_they_own,
-      read: all,
       update: things_they_own,
       delete: things_they_own
     }
   end
   
   def things_they_own
-    
+    define_ability(
+      :name => :all,
+      :truth => lambda {|thing| thing.owner_id == entity.id},
+      :where_clause => {:owner_id => entity.id}
+    )
   end
   
 end

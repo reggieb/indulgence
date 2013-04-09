@@ -9,12 +9,13 @@ module ActiveRecord
         def acts_as_indulgent(args = {})
           include Indulgence::Indulgent::InstanceMethods
           extend Indulgence::Indulgent::ClassMethods
-          @indulgent_permission_class = args[:using] || auto_indulgence_permission_class
+          @indulgent_permission_class = args[:using] || default_indulgence_permission_class
         end
         
         private
-        def auto_indulgence_permission_class
-          name = "#{to_s}Permission"
+        def default_indulgence_permission_class
+          class_name = to_s
+          name = class_name + "Permission"
           if const_defined? name
             class_eval name
           end

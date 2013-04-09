@@ -1,19 +1,27 @@
 module Indulgence
-  class Permission < Hash
-    attr_accessor :entity
+  class Permission
+    attr_reader :entity, :ability
 
-    def initialize(entity)
+    def initialize(entity, ability)
       self
       @entity = entity
-      replace abilities[role_name] || default
+      @ability = abilities_for_role[ability]
     end
 
     def abilities
-      raise "Indulgence#abilities needs to be defined"
+      raise "abilities needs to be defined"
     end
     
     def default
-      raise 'There must always be an Indulgence#default'
+      raise 'There must always be a default'
+    end
+    
+    def where
+      ability.where_clause
+    end
+    
+    def indulge?(thing)
+      ability.truth.respond_to?(:call) ? ability.truth.call(thing) : ability.truth
     end
     
     def self.role_method=(name)
@@ -33,11 +41,25 @@ module Indulgence
     end
 
     def self.none
-      nil
+      define_ability(
+        :name => :none,
+        :truth => false
+      )
     end
 
     def self.all
-      true
+      define_ability(
+        :name => :all,
+        :truth => true
+      )
+    end
+    
+    def self.define_ability(args)
+      Ability.new args
+    end
+    
+    def define_ability(args)
+      self.class.define_ability(args)
     end
 
     # Ensure passing an unknown key behaves as one would expect for a hash 
@@ -48,6 +70,10 @@ module Indulgence
     
     def role_name
       @role_name ||= entity_role_name
+    end
+    
+    def abilities_for_role
+      abilities[role_name] || default
     end
 
     private

@@ -16,33 +16,31 @@ class ThingPermissionTest < Test::Unit::TestCase
   end
   
   def test_super_user_permissions
-    permission = ThingPermission.new(@super_user)
-    assert_equal(Permission.all, permission[:create])  
-    assert_equal(Permission.all, permission[:read]) 
-    assert_equal(Permission.all, permission[:update]) 
-    assert_equal(Permission.all, permission[:delete]) 
+    assert_equal Permission.all, ThingPermission.new(@super_user, :create).ability 
+    assert_equal Permission.all, ThingPermission.new(@super_user, :read).ability 
+    assert_equal Permission.all, ThingPermission.new(@super_user, :update).ability 
+    assert_equal Permission.all, ThingPermission.new(@super_user, :delete).ability 
   end
   
   def test_default_permissions
-    permission = ThingPermission.new(@user)
-    assert_equal(Permission.none, permission[:create])  
-    assert_equal(Permission.all, permission[:read]) 
-    assert_equal(Permission.none, permission[:update]) 
-    assert_equal(Permission.none, permission[:delete]) 
+    assert_equal Permission.none, ThingPermission.new(@user, :create).ability  
+    assert_equal Permission.all, ThingPermission.new(@user, :read).ability 
+    assert_equal Permission.none, ThingPermission.new(@user, :update).ability
+    assert_equal Permission.none, ThingPermission.new(@user, :delete).ability 
   end
   
   def test_role_name
-    assert_equal @super_user.role.name.to_sym, ThingPermission.new(@super_user).role_name
+    assert_equal @super_user.role.name.to_sym, ThingPermission.new(@super_user, :read).role_name
   end
   
   def test_role_name_when_not_defined_in_permissions
-    assert_equal :default, ThingPermission.new(@user).role_name
+    assert_equal :default, ThingPermission.new(@user, :read).role_name
   end
   
-  def test_setting_unkown_role_method_causes_error
+  def test_setting_unknown_role_method_causes_error
     ThingPermission.role_method = :something_else
     assert_raise NoMethodError do
-      ThingPermission.new(@super_user).role_name
+      ThingPermission.new(@super_user, :read).role_name
     end
   end
   
