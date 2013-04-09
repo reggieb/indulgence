@@ -12,8 +12,8 @@ class ThingPermissionTest < Test::Unit::TestCase
     mortal = Role.create(:name => 'mortal')
     @user = User.create(:name => 'Trevor', :role_id => mortal.id)
     @super_user = User.create(:name => 'Jane', :role_id => god.id)
-    @original_role_name = ThingPermission.role_method
-    @original_role_name_method = ThingPermission.role_name_method
+    @original_role_name = Permission.role_method
+    @original_role_name_method = Permission.role_name_method
   end
   
   def test_super_user_permissions
@@ -39,26 +39,26 @@ class ThingPermissionTest < Test::Unit::TestCase
   end
   
   def test_setting_unknown_role_method_causes_error
-    ThingPermission.role_method = :something_else
+    Permission.role_method = :something_else
     assert_raise NoMethodError do
       ThingPermission.new(@super_user, :read).role_name
     end
   end
   
   def test_setting_role_method
-    ThingPermission.role_method = :position
+    Permission.role_method = :position
     test_super_user_permissions
   end
   
   def test_setting_unknown_role_name_method_causes_error
-    ThingPermission.role_name_method = :something_else
+    Permission.role_name_method = :something_else
     assert_raise NoMethodError do
       ThingPermission.new(@super_user, :read).role_name
     end
   end
   
   def test_setting_role_name_method
-    ThingPermission.role_name_method = :title
+    Permission.role_name_method = :title
     test_super_user_permissions
   end
   
@@ -66,8 +66,8 @@ class ThingPermissionTest < Test::Unit::TestCase
     User.delete_all
     Role.delete_all
     Thing.delete_all
-    ThingPermission.role_method = @original_role_name
-    ThingPermission.role_name_method = @original_role_name_method
+    Permission.role_method = @original_role_name
+    Permission.role_name_method = @original_role_name_method
   end
   
   def make_things

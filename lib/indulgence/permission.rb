@@ -24,20 +24,24 @@ module Indulgence
       ability.truth.respond_to?(:call) ? ability.truth.call(thing) : ability.truth
     end
     
+    @@role_method = :role
+    
     def self.role_method=(name)
-      @role_method = name.to_sym
+      @@role_method = name.to_sym
     end
 
     def self.role_method
-      @role_method || :role
+      @@role_method
     end
     
+    @@role_name_method = :name
+    
     def self.role_name_method=(name)
-      @role_name_method = name.to_sym
+      @@role_name_method = name.to_sym
     end
 
     def self.role_name_method
-      @role_name_method || :name
+      @@role_name_method
     end
 
     def self.none
