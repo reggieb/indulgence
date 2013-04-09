@@ -9,7 +9,7 @@ module Indulgence
     end
 
     def abilities
-      raise "abilities needs to be defined"
+      {}
     end
     
     def default
