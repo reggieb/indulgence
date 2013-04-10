@@ -1,3 +1,5 @@
+require_relative 'ability'
+
 module Indulgence
   class Permission
     attr_reader :entity, :ability

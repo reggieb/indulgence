@@ -186,7 +186,7 @@ permissions. This can be done by adding this method to ThingPermission:
 
 This will create an Ability object with the following methods:
 
-[name]          Allows abilities with identical functionality to be matched
+[name]          Allows abilities of the same kind to be matched
 [truth]         Used by :indulge?
 [where_clause]  Used by :indulgence 
 
@@ -270,7 +270,7 @@ Consider this example:
 
 There are two ways of dealing with this. 
 
-If only ThingPermission is affected, the attribute that stores the _role_method_ 
+If only ThingPermission is affected, the attributes that stores the _role_method_ 
 and _role_name_method_ could be overwritten:
 
     class ThingPermission < Indulgence::Permission
@@ -301,10 +301,15 @@ you wish to use alternative names, they can be aliased like this:
       :where_method => :permitted
     )
 
-With this place in Thing, we can do this:
+With this used to define indulgence in Thing, we can do this:
 
     thing.permit?(cicero, :update) == true
     thing.permit?(cicero, :delete) == false
 
     Thing.permitted(cicero, :create) == [thing]
     Thing.permitted(cicero, :read)   == Thing.all
+
+== Examples
+
+For some examples, have a look at the tests. In particular, look at the object
+definitions in test/lib. 

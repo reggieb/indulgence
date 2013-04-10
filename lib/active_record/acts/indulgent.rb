@@ -11,19 +11,27 @@ module ActiveRecord
           include Indulgence::Indulgent::InstanceMethods
           extend Indulgence::Indulgent::ClassMethods
           
-          @indulgent_permission_class = args[:using] || default_indulgence_permission_class
-          
           alias_method args[:truth_method], :indulge? if args[:truth_method]
           singleton_class.send(:alias_method, args[:where_method], :indulgence) if args[:where_method]
+          self.indulgent_permission_class = args[:using]
+        end
+        
+        def indulgent_permission_class
+          @indulgent_permission_class
         end
         
         private
         def default_indulgence_permission_class
           class_name = to_s
           name = class_name + "Permission"
+          require name.underscore
           if const_defined? name
             class_eval name
           end
+        end
+
+        def indulgent_permission_class=(klass = nil)
+          @indulgent_permission_class = klass || default_indulgence_permission_class
         end
         
       end

@@ -1,14 +1,10 @@
 module Indulgence
   module Indulgent
     
-    module ClassMethods
-      def indulgent_permission_class
-        @indulgent_permission_class
-      end
-      
+    module ClassMethods      
       def indulgence(entity, ability)
         permission = indulgent_permission_class.new(entity, ability)
-        raise_not_found if permission.ability == Permission.none or permission.blank?
+        raise_not_found if permission.ability == Permission.none or permission.ability.blank?
         where(permission.where)
       end
       
