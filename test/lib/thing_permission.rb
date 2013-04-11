@@ -36,10 +36,10 @@ class ThingPermission < Indulgence::Permission
   end
   
   def things_they_own
-    @things_they_own ||= define_ability(
+    define_ability(
       :name => :things_they_own,
-      :truth => lambda {|thing| thing.owner_id == entity.id},
-      :where_clause => {:owner_id => entity.id}
+      :indulge => lambda {|thing, user| thing.owner_id == user.id},
+      :indulgence => lambda {|user| {:owner_id => user.id}}
     )
   end
   

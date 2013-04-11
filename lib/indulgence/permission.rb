@@ -1,5 +1,3 @@
-require_relative 'ability'
-
 module Indulgence
   class Permission
     attr_reader :entity, :ability
@@ -18,12 +16,12 @@ module Indulgence
       raise 'There must always be a default'
     end
     
-    def where
-      ability.where_clause
+    def indulgence
+      call_or_return ability.indulgence, entity
     end
     
     def indulge?(thing)
-      ability.truth.respond_to?(:call) ? ability.truth.call(thing) : ability.truth
+      call_or_return ability.indulge, thing, entity
     end
     
     @@role_method = :role
@@ -47,21 +45,22 @@ module Indulgence
     end
 
     def self.none
-      @none ||= define_ability(
+      define_ability(
         :name => :none,
-        :truth => false
+        :indulge => false
       )
     end
 
     def self.all
-      @all ||= define_ability(
+      define_ability(
         :name => :all,
-        :truth => true
+        :indulge => true
       )
     end
     
     def self.define_ability(args)
-      Ability.new args
+      raise "A name required for each ability" unless args[:name]
+      ability_cache[args[:name].to_sym] ||= Ability.new args
     end
     
     def define_ability(args)
@@ -99,6 +98,14 @@ module Indulgence
 
     def none
       self.class.none
-    end  
+    end 
+    
+    def self.ability_cache
+      @ability_cache ||= {}
+    end
+    
+    def call_or_return(item, *pass_to_process)
+      item.respond_to?(:call) ? item.call(*pass_to_process) : item
+    end
   end
 end

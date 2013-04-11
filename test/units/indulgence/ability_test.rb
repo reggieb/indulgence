@@ -7,21 +7,21 @@ module Indulgence
     def test_none
       none = Ability.new(
         :name => :none,
-        :truth => false
+        :indulge => false
       )
       assert_equal(:none, none.name)
-      assert_equal(false, none.truth)
-      assert_equal(nil, none.where_clause)
+      assert_equal(false, none.indulge)
+      assert_equal(nil, none.indulgence)
     end
     
     def test_all
       all = Ability.new(
         :name => :all,
-        :truth => true
+        :indulge => true
       )
       assert_equal(:all, all.name)
-      assert_equal(true, all.truth)
-      assert_equal(nil, all.where_clause)
+      assert_equal(true, all.indulge)
+      assert_equal(nil, all.indulgence)
     end
     
     def test_equality

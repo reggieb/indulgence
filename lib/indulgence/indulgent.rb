@@ -5,7 +5,7 @@ module Indulgence
       def indulgence(entity, ability)
         permission = indulgent_permission_class.new(entity, ability)
         raise_not_found if permission.ability == Permission.none or permission.ability.blank?
-        where(permission.where)
+        where(permission.indulgence)
       end
       
       private

@@ -28,6 +28,7 @@ class ThingTest < Test::Unit::TestCase
     make_second_thing
     @owner.update_attribute(:role_id, @god.id)
     assert_equal(true, @thing.indulge?(@owner, :read))
+    @thing.indulge?(@owner, :delete)
     assert_equal(true, @thing.indulge?(@owner, :delete))
     assert_equal(true, @other_thing.indulge?(@owner, :delete))    
   end
