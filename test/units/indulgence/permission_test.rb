@@ -15,8 +15,8 @@ module Indulgence
     def test_define_ability_uses_cache_rather_than_duplicates
       args = {
         name: :test_ability,
-        indulge: lambda {|thing, entity| true},
-        indulgence: lambda {|entity| nil}
+        compare_single: lambda {|thing, entity| true},
+        filter_many: lambda {|entity| nil}
       }
       abilities_at_start = ObjectSpace.each_object(Ability).count
       Permission.define_ability args

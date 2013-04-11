@@ -17,13 +17,13 @@ module Indulgence
     end
     
     def indulgence
-      check_method_can_be_called(:indulgence)
-      ability.indulgence.call entity
+      check_method_can_be_called(:filter_many)
+      ability.filter_many.call entity
     end
     
     def indulge?(thing)
-      check_method_can_be_called(:indulge)
-      ability.indulge.call thing, entity
+      check_method_can_be_called(:compare_single)
+      ability.compare_single.call thing, entity
     end
     
     @@role_method = :role
@@ -49,16 +49,16 @@ module Indulgence
     def self.none
       Permission.define_ability(
         :name => :none,
-        :indulge => lambda {|thing, entity| false},
-        :indulgence => lambda {|entity| raise NotFoundError}
+        :compare_single => lambda {|thing, entity| false},
+        :filter_many => lambda {|entity| raise NotFoundError}
       )
     end
 
     def self.all
       Permission.define_ability(
         :name => :all,
-        :indulge => lambda {|thing, entity| true},
-        :indulgence => lambda {|entity| nil}
+        :compare_single => lambda {|thing, entity| true},
+        :filter_many => lambda {|entity| nil}
       )
     end
     

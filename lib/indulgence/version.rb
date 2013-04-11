@@ -10,17 +10,16 @@ end
 #         Adds automatic caching of abilites. Required a reworking of ability 
 #         lambdas, so that a particular entity id wasn't cached
 #         
-#         Renamed ability methods truth as indugle, and where_clause as indulgence
-#         to give consistency between the ability method and the permission
-#         method it affects.
+#         Renamed ability methods truth as compare_single, and where_clause as 
+#         filter_many as more descriptive.
 #         
-#         Forced Ability methods #indulge and #indulgence to use lambdas (or
-#         other object that responds to call). The reasons:
+#         Forced Ability methods #compare_single and #filter_many to use lambdas 
+#         (or other object that responds to call). The reasons:
 #         
 #           1. To remove the special way that the none ability was handled.
-#           2. Previously, if Ability#indulgence was nil everything would be returned,
+#           2. Previously, if Ability#filter_many was nil everything would be returned,
 #              which I think is counter-intuitive.
-#           3. Also if Ability#indulgence was undefined, then everything would
+#           3. Also if Ability#filter_many was undefined, then everything would
 #              be returned, which is just poor design for a permission tool. Now
 #              an error is raised. 
 # 

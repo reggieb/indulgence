@@ -8,8 +8,8 @@ module Indulgence
     def setup
       @attributes = {
         name: :foo, 
-        indulge: lambda {|thing, entity| true},
-        indulgence: lambda {|entity| nil}
+        compare_single: lambda {|thing, entity| true},
+        filter_many: lambda {|entity| nil}
       }
     end
     
@@ -26,12 +26,12 @@ module Indulgence
     end
     
     def test_indulge_must_respond_to_call
-      @attributes[:indulge] = true
+      @attributes[:compare_single] = true
       assert_initiation_raises_error
     end
     
     def test_indulgence_must_respond_to_call
-      @attributes[:indulgence] = true
+      @attributes[:filter_many] = true
       assert_initiation_raises_error
     end
     

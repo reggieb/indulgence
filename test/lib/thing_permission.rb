@@ -38,8 +38,8 @@ class ThingPermission < Indulgence::Permission
   def things_they_own
     define_ability(
       :name => :things_they_own,
-      :indulge => lambda {|thing, user| thing.owner_id == user.id},
-      :indulgence => lambda {|user| {:owner_id => user.id}}
+      :compare_single => lambda {|thing, user| thing.owner_id == user.id},
+      :filter_many => lambda {|user| {:owner_id => user.id}}
     )
   end
   

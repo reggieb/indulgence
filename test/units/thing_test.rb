@@ -67,14 +67,14 @@ class ThingTest < Test::Unit::TestCase
     end
   end
   
-  def test_truth_method
+  def test_aliased_compare_single_method
     make_second_thing
     assert_equal(true, @thing.permit?(@owner, :read))
     assert_equal(false, @thing.permit?(@owner, :delete))
     assert_equal(false, @other_thing.permit?(@owner, :delete))
   end
   
-  def test_where_method
+  def test_aliased_filter_many_method
     make_second_thing
     @owner.update_attribute(:role_id, @demigod.id)
     assert_equal(Thing.order('id'), Thing.permitted(@owner, :read).order('id'))

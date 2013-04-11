@@ -1,17 +1,17 @@
 
 module Indulgence
   class Ability
-    attr_reader :name, :indulge, :indulgence
+    attr_reader :name, :compare_single, :filter_many
     
     def initialize(args = {})
       @name = args[:name]
-      @indulge = args[:indulge]
-      @indulgence = args[:indulgence]
+      @compare_single = args[:compare_single]
+      @filter_many = args[:filter_many]
       valid?
     end
     
     def ==(another_ability)
-      [:name, :indulge, :indulgence].each do |method|
+      [:name, :compare_single, :filter_many].each do |method|
         return false if send(method) != another_ability.send(method)
       end
       return true
@@ -19,8 +19,8 @@ module Indulgence
     
     def valid?
       must_be_name
-      must_respond_to_call :indulge
-      must_respond_to_call :indulgence
+      must_respond_to_call :compare_single
+      must_respond_to_call :filter_many
     end
     
     private
