@@ -21,7 +21,7 @@ module Indulgence
       ability.filter_many.call entity
     end
     
-    def indulge?(thing)
+    def compare_single(thing)
       check_method_can_be_called(:compare_single)
       ability.compare_single.call thing, entity
     end

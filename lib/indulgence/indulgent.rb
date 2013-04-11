@@ -19,7 +19,7 @@ module Indulgence
       
       def indulge?(entity, ability)
         permission = self.class.indulgent_permission_class.new(entity, ability)
-        return permission.indulge? self
+        return permission.compare_single self
       end
       
     end
