@@ -6,6 +6,7 @@ module Indulgence
       self
       @entity = entity
       @ability = abilities_for_role[ability]
+      raise AbilityNotFound, "Unable to find an ability called #{ability}" unless @ability
     end
 
     def abilities
@@ -16,9 +17,9 @@ module Indulgence
       raise 'There must always be a default'
     end
     
-    def filter_many
+    def filter_many(things)
       check_method_can_be_called(:filter_many)
-      ability.filter_many.call entity
+      ability.filter_many.call things, entity
     end
     
     def compare_single(thing)
@@ -50,7 +51,7 @@ module Indulgence
       Permission.define_ability(
         :name => :none,
         :compare_single => lambda {|thing, entity| false},
-        :filter_many => lambda {|entity| raise NotFoundError}
+        :filter_many => lambda {|things, entity| raise NotFoundError}
       )
     end
 
@@ -58,7 +59,7 @@ module Indulgence
       Permission.define_ability(
         :name => :all,
         :compare_single => lambda {|thing, entity| true},
-        :filter_many => lambda {|entity| nil}
+        :filter_many => lambda {|things, entity| things}
       )
     end
     

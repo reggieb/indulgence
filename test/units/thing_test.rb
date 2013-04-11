@@ -58,6 +58,12 @@ class ThingTest < Test::Unit::TestCase
     end
   end
   
+  def test_indulgence_with_unspecified_ability
+    assert_raise ActiveRecord::RecordNotFound do
+      Thing.indulgence(@owner, :unspecified)
+    end    
+  end
+  
   def test_find
     make_second_thing
     @owner.update_attribute(:role_id, @demigod.id)

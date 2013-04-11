@@ -39,7 +39,7 @@ class ThingPermission < Indulgence::Permission
     define_ability(
       :name => :things_they_own,
       :compare_single => lambda {|thing, user| thing.owner_id == user.id},
-      :filter_many => lambda {|user| {:owner_id => user.id}}
+      :filter_many => lambda {|things, user| things.where(:owner_id => user.id)}
     )
   end
   

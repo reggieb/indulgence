@@ -62,6 +62,12 @@ class ThingPermissionTest < Test::Unit::TestCase
     test_super_user_permissions
   end
   
+  def test_with_unspecified_ability
+    assert_raise Indulgence::AbilityNotFound do
+      ThingPermission.new(@user, :unspecified)
+    end
+  end
+  
   def teardown
     User.delete_all
     Role.delete_all

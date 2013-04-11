@@ -4,8 +4,8 @@ module Indulgence
     module ClassMethods      
       def indulgence(entity, ability)
         permission = indulgent_permission_class.new(entity, ability)
-        where(permission.filter_many)
-      rescue Indulgence::NotFoundError
+        permission.filter_many(self)
+      rescue Indulgence::NotFoundError, Indulgence::AbilityNotFound
         raise_not_found
       end
       
