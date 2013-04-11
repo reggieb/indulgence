@@ -45,16 +45,16 @@ module Indulgence
     end
 
     def self.none
-      define_ability(
+      Permission.define_ability(
         :name => :none,
-        :indulge => false
+        :indulge => lambda {|thing, user| false}
       )
     end
 
     def self.all
-      define_ability(
+      Permission.define_ability(
         :name => :all,
-        :indulge => true
+        :indulge => lambda {|thing, user| true}
       )
     end
     
