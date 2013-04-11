@@ -16,7 +16,7 @@ module Indulgence
       raise 'There must always be a default'
     end
     
-    def indulgence
+    def filter_many
       check_method_can_be_called(:filter_many)
       ability.filter_many.call entity
     end
