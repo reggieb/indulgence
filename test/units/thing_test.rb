@@ -33,6 +33,12 @@ class ThingTest < Test::Unit::TestCase
     assert_equal(true, @other_thing.indulge?(@owner, :delete))    
   end
   
+  def test_indulgence_by_god
+    make_second_thing
+    @owner.update_attribute(:role_id, @god.id)
+    assert_equal(Thing.all, Thing.indulgence(@owner, :delete))  
+  end
+  
   def test_indulge_by_demigod
     make_second_thing
     @owner.update_attribute(:role_id, @demigod.id)

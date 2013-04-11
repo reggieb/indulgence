@@ -59,7 +59,7 @@ module Indulgence
       Permission.define_ability(
         :name => :all,
         :compare_single => lambda {|thing, entity| true},
-        :filter_many => lambda {|things, entity| things}
+        :filter_many => lambda {|things, entity| things.where(nil)}
       )
     end
     
