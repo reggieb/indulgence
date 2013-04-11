@@ -17,11 +17,13 @@ module Indulgence
     end
     
     def indulgence
-      call_or_return ability.indulgence, entity
+      check_method_can_be_called(:indulgence)
+      ability.indulgence.call entity
     end
     
     def indulge?(thing)
-      call_or_return ability.indulge, thing, entity
+      check_method_can_be_called(:indulge)
+      ability.indulge.call thing, entity
     end
     
     @@role_method = :role
@@ -47,19 +49,21 @@ module Indulgence
     def self.none
       Permission.define_ability(
         :name => :none,
-        :indulge => lambda {|thing, user| false}
+        :indulge => lambda {|thing, entity| false},
+        :indulgence => lambda {|entity| raise NotFoundError}
       )
     end
 
     def self.all
       Permission.define_ability(
         :name => :all,
-        :indulge => lambda {|thing, user| true}
+        :indulge => lambda {|thing, entity| true},
+        :indulgence => lambda {|entity| nil}
       )
     end
     
     def self.define_ability(args)
-      raise "A name required for each ability" unless args[:name]
+      raise AbilityConfigurationError, "A name is required for each ability" unless args[:name]
       ability_cache[args[:name].to_sym] ||= Ability.new args
     end
     
@@ -104,8 +108,8 @@ module Indulgence
       @ability_cache ||= {}
     end
     
-    def call_or_return(item, *pass_to_process)
-      item.respond_to?(:call) ? item.call(*pass_to_process) : item
+    def check_method_can_be_called(name)
+      raise AbilityConfigurationError, "#{name} method must respond to call" unless ability.send(name).respond_to? :call
     end
   end
 end

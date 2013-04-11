@@ -1,3 +1,4 @@
+require_relative 'indulgence/exceptions'
 require_relative 'indulgence/ability'
 require_relative 'indulgence/permission'
 require_relative 'indulgence/indulgent'
