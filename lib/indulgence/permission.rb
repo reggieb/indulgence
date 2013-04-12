@@ -71,12 +71,6 @@ module Indulgence
     def define_ability(args)
       self.class.define_ability(args)
     end
-
-    # Ensure passing an unknown key behaves as one would expect for a hash 
-    def [](key)
-      return {}[key] unless keys.include? key
-      super
-    end
     
     def role_name
       @role_name ||= entity_role_name

@@ -10,7 +10,7 @@ things:
 
 It was apparent to me that if 'something' was one of the CRUD actions, it would
 cover most of the use cases I could think of. So permissions were sub-divided 
-into the 'abilities': create, read, update, and delete.
+into the 'actions': create, read, update, and delete.
 
 The other requirement was that the permission for an object could be defined
 succinctly within a single file.
@@ -101,7 +101,7 @@ give Emperors the right to see and do anything by first creating an emperor
     caesar = User.create(
       :first_name => 'Julius', 
       :last_name => 'Ceasar',
-      :role_id => emporor.id
+      :role_id => emperor.id
     )
 
 And then defining what they can do by adding these two methods to ThingPermission:
