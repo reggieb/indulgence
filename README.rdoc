@@ -243,6 +243,40 @@ With that done:
     Thing.indulgence(cicero, :update) == [thing]
     Thing.indulgence(cicero, :delete)  --> raises ActiveRecord::RecordNotFound
 
+=== Defining your own actions
+
+The default actions on which indulgence is based are the CRUD operations: 
+_create_, _read_, _update_ and _delete_. You can add your own actions, or
+define a completely different action set if you prefer. 
+
+So for example when showing information about a thing, we could 
+display a warning that only emperors should see.
+
+First update ThingPermissions like this:
+
+    def default
+      {
+        create: none,
+        read: all,
+        update: none,
+        delete: none,
+        prophecy: none,
+      }
+    end
+
+    def emperor
+      {
+        create: all,
+        update: all,
+        delete: all,
+        prophecy: all
+      }
+    end
+
+And then in views/things/show.html.erb add:
+
+    <%= "Beware the Ides of March" if @thing.indulge?(current_user, :prophecy) %>
+
 === Alternative Permission Class
 
 As stated above, the default behaviour is for a Thing class to expect its
