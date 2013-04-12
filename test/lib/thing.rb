@@ -7,8 +7,8 @@ class Thing < ActiveRecord::Base
   belongs_to :owner, :class_name => 'User'
   
   acts_as_indulgent(
-    :truth_method => :permit?,
-    :where_method => :permitted
+    :compare_single_method => :permit?,
+    :filter_many_method => :permitted
   )
   
 end

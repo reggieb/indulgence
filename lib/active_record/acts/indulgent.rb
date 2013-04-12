@@ -11,8 +11,8 @@ module ActiveRecord
           include Indulgence::Indulgent::InstanceMethods
           extend Indulgence::Indulgent::ClassMethods
           
-          alias_method args[:truth_method], :indulge? if args[:truth_method]
-          singleton_class.send(:alias_method, args[:where_method], :indulgence) if args[:where_method]
+          alias_method args[:compare_single_method], :indulge? if args[:compare_single_method]
+          singleton_class.send(:alias_method, args[:filter_many_method], :indulgence) if args[:filter_many_method]
           self.indulgent_permission_class = args[:using]
         end
         
