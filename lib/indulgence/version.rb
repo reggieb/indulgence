@@ -1,9 +1,15 @@
 module Indulgence
-  VERSION = "0.0.2"
+  VERSION = "0.0.3"
 end
 
 # History
 # =======
+# 
+# 0.0.3   Updated to use latest version of standalone_migrations
+# 
+#         standalone_migrations main has been updated to use branch this app
+#         has been using. So config in .standalone_migrations now works without
+#         using a specific clone branch.
 # 
 # 0.0.2   Rebuild with lessons learnt from first usage in host app
 # 
