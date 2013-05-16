@@ -18,12 +18,10 @@ module Indulgence
     end
     
     def filter_many(things)
-      check_method_can_be_called(:filter_many)
       ability.filter_many.call things, entity
     end
     
     def compare_single(thing)
-      check_method_can_be_called(:compare_single)
       ability.compare_single.call thing, entity
     end
     
@@ -103,8 +101,5 @@ module Indulgence
       @ability_cache ||= {}
     end
     
-    def check_method_can_be_called(name)
-      raise AbilityConfigurationError, "#{name} method must respond to call" unless ability.send(name).respond_to? :call
-    end
   end
 end
