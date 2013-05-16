@@ -18,11 +18,11 @@ module Indulgence
     end
     
     def filter_many(things)
-      ability.filter_many.call things, entity
+      ability.filter_many things, entity
     end
     
     def compare_single(thing)
-      ability.compare_single.call thing, entity
+      ability.compare_single thing, entity
     end
     
     @@role_method = :role
