@@ -17,7 +17,7 @@ succinctly within a single file.
 
 == Defining indulgent permissions
 
-Indulgence is added to a class via acts_as_indulgent:
+Indulgence can be added to a class via acts_as_indulgent:
 
     class Thing < ActiveRecord::Base
       acts_as_indulgent
@@ -59,11 +59,11 @@ So typically, these objects could look like this:
       validates :name, :uniqueness => true
     end
     
-    role = Role.create(:name => 'pleb')
+    pleb = Role.create(:name => 'pleb')
     user = User.create(
       :first_name => 'Joe', 
       :last_name => 'Blogs',
-      :role_id => role.id
+      :role => pleb
     ) 
 
 == Compare single item: indulge?
@@ -101,7 +101,7 @@ give Emperors the right to see and do anything by first creating an emperor
     caesar = User.create(
       :first_name => 'Julius', 
       :last_name => 'Ceasar',
-      :role_id => emperor.id
+      :role => emperor
     )
 
 And then defining what they can do by adding these two methods to ThingPermission:
@@ -201,7 +201,7 @@ or _false_ when it _call_ method is passed the object and the entity.
 
 In this example: 
 
-    Thing.indulgence(user, :read) == Thing.where(:author_id => user.id)
+    Thing.indulgence(user, :read) == Thing.where(:author => user)
 
 if the :read ability is matched to *things_they_wrote*
 
@@ -227,11 +227,10 @@ With that done:
     cicero = User.create(
       :first_name => 'Marcus', 
       :last_name => 'Cicero', 
-      :role_id => author.id
+      :role => author
     )
 
-    thing.author = cicero
-    thing.save
+    thing.update_attribute :author, cicero
 
     thing.indulge?(cicero, :create) == true
     thing.indulge?(cicero, :read)   == true
@@ -304,6 +303,7 @@ If only ThingPermission is affected, the attributes that stores the _role_method
 and _role_name_method_ could be overwritten:
 
     class ThingPermission < Indulgence::Permission
+
       def self.role_method
         :position
       end
@@ -343,3 +343,17 @@ With this used to define indulgence in Thing, we can do this:
 
 For some examples, have a look at the tests. In particular, look at the object
 definitions in test/lib. 
+
+== Playing with Indulgence
+
+This app has a set of tests associated with it. The test suite includes the
+configuration for a sqlite3 test database, with migrations and fixtures. If you
+wish to play with, and/or modify Indulgence: fork the project and clone a local
+copy. Run bundler to install the necessary gems. Then use this command to
+create the test database:
+
+    rake db:migrate RAILS_ENV=test
+
+If this raises no errors, you should then be able to run the tests with:
+
+    rake test

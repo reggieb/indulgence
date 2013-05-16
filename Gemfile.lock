@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    indulgence (0.0.2)
+    indulgence (0.0.3)
       activerecord
 
 GEM
