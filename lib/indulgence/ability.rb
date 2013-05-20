@@ -30,8 +30,12 @@ module Indulgence
     def compare_single(thing, entity)
       return @compare_single.call thing, entity if @compare_single
       
-      identifier = thing.send(relationship)    
-      identifier == entity.id || identifier == entity     
+      identifier = thing.send(relationship)
+      if identifier.kind_of?(Array)
+        identifier.include? entity
+      else 
+        identifier == entity.id || identifier == entity   
+      end
     end
     
     def filter_many(things, entity)

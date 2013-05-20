@@ -1,9 +1,11 @@
 module Indulgence
-  VERSION = "0.0.4"
+  VERSION = "0.0.5"
 end
 
 # History
 # =======
+# 
+# 0.0.5   Allows simplified ability definition to be used with has_many
 # 
 # 0.0.4   Simplifies defining abilities
 # 
