@@ -1,9 +1,14 @@
 module Indulgence
-  VERSION = "0.0.3"
+  VERSION = "0.0.4"
 end
 
 # History
 # =======
+# 
+# 0.0.4   Simplifies defining abilities
+# 
+#         Allows and ability to be defined by passing in the name of the 
+#         association that it refers to.
 # 
 # 0.0.3   Updated to use latest version of standalone_migrations
 # 

@@ -62,7 +62,7 @@ module Indulgence
     end
     
     def self.define_ability(args)
-      raise AbilityConfigurationError, "A name is required for each ability" unless args[:name]
+      args = generate_ability_args(args)
       ability_cache[args[:name].to_sym] ||= Ability.new args
     end
     
@@ -99,6 +99,20 @@ module Indulgence
     
     def self.ability_cache
       @ability_cache ||= {}
+    end
+    
+    def self.generate_ability_args(args)
+      unless args.kind_of? Hash
+        args = {:relationship => args.to_sym}
+      end
+      args[:name] = generate_ability_name(args)
+      return args
+    end
+    
+    def self.generate_ability_name(args)
+      return args[:name] if args[:name]
+      return args.to_s if args[:relationship]
+      raise AbilityConfigurationError, "A name is required for each ability"
     end
     
   end

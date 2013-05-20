@@ -8,6 +8,7 @@ class ThingTest < Test::Unit::TestCase
     @god = Role.create(:name => 'god')
     @demigod = Role.create(:name => 'demigod')
     @thief = Role.create(:name => 'thief')
+    @friend = Role.create(:name => 'friend')
     @owner = User.create(:name => 'Mary')
     @thing = Thing.create(:name => 'Stuff', :owner => @owner)
   end
@@ -47,7 +48,7 @@ class ThingTest < Test::Unit::TestCase
     assert_equal(false, @other_thing.indulge?(@owner, :delete))
   end
   
-  def test_indule_via_entity_id_method
+  def test_indule_via_entity_id
     make_second_thing
     @owner.update_attribute(:role, @thief)
     assert_equal(true, @thing.indulge?(@owner, :read))
@@ -55,6 +56,14 @@ class ThingTest < Test::Unit::TestCase
     assert_equal(false, @thing.indulge?(@owner, :delete))
   end
   
+  def test_indule_via_entity_association
+    make_second_thing
+    @owner.update_attribute(:role, @friend)
+    assert_equal(true, @thing.indulge?(@owner, :read))
+    assert_equal(true, @thing.indulge?(@owner, :update)) 
+    assert_equal(false, @thing.indulge?(@owner, :delete))
+  end
+    
   def test_indulge_other_thing
     other_thing = OtherThing.create(:name => 'Other Stuff', :owner => @owner)
     assert_equal(true, other_thing.indulge?(@owner, :read))
@@ -75,8 +84,13 @@ class ThingTest < Test::Unit::TestCase
   def test_indulgence_via_entity_id_method
     make_second_thing
     @owner.update_attribute(:role, @thief)
-    assert_equal([@thing], Thing.where(:owner_id => @owner.id))
-#    assert_equal([@thing], Thing.indulgence(@owner, :update))
+    assert_equal(Thing.where(:owner_id => @owner.id), Thing.indulgence(@owner, :update))
+  end
+  
+  def test_indulgence_via_entity_association
+    make_second_thing
+    @owner.update_attribute(:role, @friend)
+    assert_equal(Thing.where(:owner_id => @owner.id).all, Thing.indulgence(@owner, :update).all)
   end
   
   def test_indulgence_with_unspecified_ability

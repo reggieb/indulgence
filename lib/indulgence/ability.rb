@@ -1,13 +1,13 @@
 
 module Indulgence
   class Ability
-    attr_reader :name, :entity_id_method, :args
+    attr_reader :name, :relationship, :args
     
     def initialize(args = {})
       @name = args[:name]
       @compare_single = args[:compare_single]
       @filter_many = args[:filter_many]
-      @entity_id_method = args[:entity_id_method]
+      @relationship = args[:relationship]
       @args = args
       valid?
     end
@@ -21,25 +21,26 @@ module Indulgence
     
     def valid?
       must_be_name
-      unless entity_id_method
+      unless relationship
         must_respond_to_call @compare_single
         must_respond_to_call @filter_many
       end
     end
     
     def compare_single(thing, entity)
-      if entity_id_method
-        thing.send(entity_id_method) == entity.id
-      else
-        @compare_single.call thing, entity   
-      end
+      return @compare_single.call thing, entity if @compare_single
+      
+      identifier = thing.send(relationship)    
+      identifier == entity.id || identifier == entity     
     end
     
     def filter_many(things, entity)
-      if entity_id_method
-        things.where(entity_id_method => entity.id)
+      return @filter_many.call things, entity if @filter_many
+      
+      if things.reflect_on_association(relationship)
+        things.joins(relationship).where(entity.class.table_name => {:id => entity.id})
       else
-        @filter_many.call things, entity   
+        things.where(relationship => entity.id)
       end
     end
     

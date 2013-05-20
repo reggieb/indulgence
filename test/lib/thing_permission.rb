@@ -6,7 +6,8 @@ class ThingPermission < Indulgence::Permission
     {
       god: default.merge(god),
       demigod: default.merge(demigod),
-      thief: default.merge(thief)
+      thief: default.merge(thief),
+      friend: default.merge(friend)
     }
   end
   
@@ -42,6 +43,12 @@ class ThingPermission < Indulgence::Permission
     }
   end
   
+  def friend
+    {
+      update: things_they_borrow
+    }
+  end
+  
   def things_they_own
     define_ability(
       name: :things_they_own,
@@ -51,10 +58,11 @@ class ThingPermission < Indulgence::Permission
   end
   
   def things_they_stole
-    define_ability(
-      name: :things_they_stole,
-      entity_id_method: :owner_id
-    )
+    define_ability(:owner_id)
+  end
+  
+  def things_they_borrow
+    define_ability(:owner)
   end
   
 end

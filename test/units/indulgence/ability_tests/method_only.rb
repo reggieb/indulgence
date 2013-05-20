@@ -6,7 +6,7 @@ module Indulgence
       def setup
         @attributes = {
           name: :foo, 
-          entity_id_method: :author
+          relationship: :author
         }
       end
 
@@ -23,7 +23,7 @@ module Indulgence
       end
 
       def test_lack_of_entity_id_method
-        @attributes.delete :entity_id_method
+        @attributes.delete :relationship
         assert_initiation_raises_error
       end
       

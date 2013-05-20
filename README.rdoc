@@ -184,26 +184,28 @@ permissions. This can be done by adding this method to ThingPermission:
 
 This will create an Ability object with the following methods:
 
-[name]           Allows abilities of the same kind to be matched
+[name]           Allows abilities of the same kind to be matched and cached
 [compare_single] Used by :indulge?
 [filter_many]    Used by :indulgence 
 
-==== Compare single
+Alternatively, you can achieve the same result by defining lambdas for the
+ability methods :compare_single and :filter_many. If you use lambdas, you must
+also define a name.
 
-_compare_single_ should be a lambda that is passed the object being tested and
-the entity it is to be tested against. The lambda returns _true_ if permission 
-should be given. Otherwise _false_ should be returned.
+Alternatively you can define the ability like this:
 
-Alternatively, instead of a lambda, any object can be used that returns _true_
-or _false_ when it _call_ method is passed the object and the entity.
+  def things_they_wrote
+    define_ability(:author)
+  end
 
-==== Filter many
+This will use :author to define attributes of an ability object. :author could
+be an association or an attribute that return either the entity or the entity.id.
 
-In this example: 
+So this also works:
 
-    Thing.indulgence(user, :read) == Thing.where(:author => user)
-
-if the :read ability is matched to *things_they_wrote*
+  def things_they_wrote
+    define_ability(:author_id)
+  end
 
 Once *things_they_wrote* has been defined, we can use it to define a new set
 of abilities:
