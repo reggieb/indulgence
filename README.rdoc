@@ -188,10 +188,6 @@ This will create an Ability object with the following methods:
 [compare_single] Used by :indulge?
 [filter_many]    Used by :indulgence 
 
-Alternatively, you can achieve the same result by defining lambdas for the
-ability methods :compare_single and :filter_many. If you use lambdas, you must
-also define a name.
-
 Alternatively you can define the ability like this:
 
   def things_they_wrote
@@ -199,7 +195,7 @@ Alternatively you can define the ability like this:
   end
 
 This will use :author to define attributes of an ability object. :author could
-be an association or an attribute that return either the entity or the entity.id.
+be an association or an attribute that returns either the entity or the entity.id.
 
 So this also works:
 
