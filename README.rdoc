@@ -24,7 +24,21 @@ Indulgence can be added to a class via acts_as_indulgent:
     end
 
 Used in this way, permissions need to be defined in an Indulgence::Permission
-object called ThingPermission, with an instance method :default
+object called ThingPermission.
+
+    class ThingPermission < Indulgence::Permission
+
+    end
+
+This needs to be available to the Thing class. For example, in a rails app, by
+placing it in app/permissions/thing_permission.rb
+
+=== Default permissions
+
+The Permission class has a default method, that matches all the CRUD actions to 
+the ability *none*.
+
+This behaviour can be overridden by explicitly defining the default method.
 
     class ThingPermission < Indulgence::Permission
 
@@ -39,13 +53,10 @@ object called ThingPermission, with an instance method :default
 
     end
 
-This needs to be available to the Thing class. For example, in a rails app, by
-placing it in app/permissions/thing_permission.rb
-
 == Users and Roles
 
 Indulgence assumes that permissions will be tested against an entity object
-(e.g. User). The default behaviour assumes that the entity object has a :role 
+(e.g. User). The standard behaviour assumes that the entity object has a :role
 method that returns the role object, and that the role object has a :name method. 
 
 So typically, these objects could look like this:
@@ -73,7 +84,7 @@ Simple true/false permission can be determined using the :indulge? method:
     thing = Thing.first
 
     thing.indulge?(user, :create) == false
-    thing.indulge?(user, :read)   == true
+    thing.indulge?(user, :read)   == true      # Note default has be overridden
     thing.indulge?(user, :update) == false
     thing.indulge?(user, :delete) == false
 
@@ -94,8 +105,8 @@ So to find all the blue things that the user has permission to read:
 
 === Adding other roles
 
-Up until now, all users get the same permissions irrespective of role. Let's
-give Emperors the right to see and do anything by first creating an emperor
+Up until now, all users get the same permissions (default) irrespective of role.
+Let's give Emperors the right to see and do anything by first creating an emperor
 
     emperor = Role.create(:name => 'emperor')
     caesar = User.create(

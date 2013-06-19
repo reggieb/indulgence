@@ -11,19 +11,10 @@ class ThingPermission < Indulgence::Permission
     }
   end
   
-  
-  def default
-    {
-      create: none,
-      read: all,
-      update: none,
-      delete: none
-    }
-  end
-  
   def god
     {
       create: all,
+      read: all,
       update: all,
       delete: all
     }
@@ -32,6 +23,7 @@ class ThingPermission < Indulgence::Permission
   def demigod
     {
       create: things_they_own,
+      read: all,
       update: things_they_own,
       delete: things_they_own
     }
@@ -39,12 +31,14 @@ class ThingPermission < Indulgence::Permission
   
   def thief
     {
+      read: all,
       update: things_they_stole
     }
   end
   
   def friend
     {
+      read: all,
       update: things_they_borrow
     }
   end

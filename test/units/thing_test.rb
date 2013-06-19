@@ -21,7 +21,7 @@ class ThingTest < Test::Unit::TestCase
   
   def test_indulge
     make_second_thing
-    assert_equal(true, @thing.indulge?(@owner, :read))
+    assert_equal(false, @thing.indulge?(@owner, :read))
     assert_equal(false, @thing.indulge?(@owner, :delete))
     assert_equal(false, @other_thing.indulge?(@owner, :delete))
   end
@@ -66,7 +66,7 @@ class ThingTest < Test::Unit::TestCase
     
   def test_indulge_other_thing
     other_thing = OtherThing.create(:name => 'Other Stuff', :owner => @owner)
-    assert_equal(true, other_thing.indulge?(@owner, :read))
+    assert_equal(false, other_thing.indulge?(@owner, :read))
     assert_equal(false, other_thing.indulge?(@owner, :delete))
   end
   
@@ -74,7 +74,9 @@ class ThingTest < Test::Unit::TestCase
     make_second_thing
     @owner.update_attribute(:role, @demigod)
     assert_equal(Thing.order('id'), Thing.indulgence(@owner, :read).order('id'))
-    assert_equal(Thing.order('id'), Thing.indulgence(@user, :read).order('id'))
+    assert_raise ActiveRecord::RecordNotFound do
+      Thing.indulgence(@user, :read).order('id')
+    end
     assert_equal([@thing], Thing.indulgence(@owner, :delete))
     assert_raise ActiveRecord::RecordNotFound do
       Thing.indulgence(@user, :delete)
@@ -110,7 +112,7 @@ class ThingTest < Test::Unit::TestCase
   
   def test_aliased_compare_single_method
     make_second_thing
-    assert_equal(true, @thing.permit?(@owner, :read))
+    assert_equal(false, @thing.permit?(@owner, :read))
     assert_equal(false, @thing.permit?(@owner, :delete))
     assert_equal(false, @other_thing.permit?(@owner, :delete))
   end
@@ -119,7 +121,9 @@ class ThingTest < Test::Unit::TestCase
     make_second_thing
     @owner.update_attribute(:role, @demigod)
     assert_equal(Thing.order('id'), Thing.permitted(@owner, :read).order('id'))
-    assert_equal(Thing.order('id'), Thing.permitted(@user, :read).order('id'))
+    assert_raise ActiveRecord::RecordNotFound do
+      Thing.permitted(@user, :read).order('id')
+    end
     assert_equal([@thing], Thing.permitted(@owner, :delete))
     assert_raise ActiveRecord::RecordNotFound do
       Thing.permitted(@user, :delete)

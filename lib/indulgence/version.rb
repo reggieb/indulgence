@@ -1,9 +1,12 @@
 module Indulgence
-  VERSION = "0.0.5"
+  VERSION = "0.0.6"
 end
 
 # History
 # =======
+#
+# 0.0.6   Specifies the default behaviour as assigning the none ability to
+#         all CRUD actions.
 # 
 # 0.0.5   Allows simplified ability definition to be used with has_many
 # 

@@ -14,7 +14,12 @@ module Indulgence
     end
     
     def default
-      raise 'There must always be a permission default'
+      {
+        create: none,
+        read: none,
+        update: none,
+        delete: none
+      }
     end
     
     def filter_many(things)

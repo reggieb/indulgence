@@ -25,7 +25,7 @@ class ThingPermissionTest < Test::Unit::TestCase
   
   def test_default_permissions
     assert_equal Permission.none, ThingPermission.new(@user, :create).ability  
-    assert_equal Permission.all, ThingPermission.new(@user, :read).ability 
+    assert_equal Permission.none, ThingPermission.new(@user, :read).ability
     assert_equal Permission.none, ThingPermission.new(@user, :update).ability
     assert_equal Permission.none, ThingPermission.new(@user, :delete).ability 
   end
