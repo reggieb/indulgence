@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/reggieb/indulgence"
   s.summary     = "Yet another permissions gem"
   s.description = "Packages permission functionality into a set of permission objects."
-
+  s.license = 'MIT-LICENSE'
   s.files = Dir["lib/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
   

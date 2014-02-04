@@ -47,8 +47,8 @@ class ThingTest < Test::Unit::TestCase
     assert_equal(true, @thing.indulge?(@owner, :delete)) 
     assert_equal(false, @other_thing.indulge?(@owner, :delete))
   end
-  
-  def test_indule_via_entity_id
+
+  def test_indulge_via_entity_id
     make_second_thing
     @owner.update_attribute(:role, @thief)
     assert_equal(true, @thing.indulge?(@owner, :read))
@@ -56,12 +56,39 @@ class ThingTest < Test::Unit::TestCase
     assert_equal(false, @thing.indulge?(@owner, :delete))
   end
   
-  def test_indule_via_entity_association
+  def test_indulge_via_entity_association
     make_second_thing
     @owner.update_attribute(:role, @friend)
     assert_equal(true, @thing.indulge?(@owner, :read))
     assert_equal(true, @thing.indulge?(@owner, :update)) 
     assert_equal(false, @thing.indulge?(@owner, :delete))
+  end
+
+  def test_indulge_on_new_object
+    @thing = Thing.new(:name => 'New', :owner => @owner)
+    @owner.update_attribute(:role, @demigod)
+    assert_equal(true, @thing.indulge?(@owner, :create))
+  end
+
+  def test_indulge_on_new_object_where_ability_defined_by_relationshop_name
+    @thing = Thing.new(:name => 'New', :owner => @owner)
+    @owner.update_attribute(:role, @friend)
+    assert_equal(true, @thing.indulge?(@owner, :update))
+  end
+
+  def test_indulge_as_class_method
+    assert_equal(false, Thing.indulge?(@owner, :read))
+    @owner.update_attribute(:role, @god)
+    assert_equal(true, Thing.indulge?(@owner, :read))
+  end
+
+  def test_indulge_as_class_method_with_custom_method
+    @owner.update_attribute(:role, @thief)
+    assert_equal(false, Thing.indulge?(@owner, :update))
+    @owner.update_attribute(:role, @friend)
+    assert_equal(false, Thing.indulge?(@owner, :update))
+    @owner.update_attribute(:role, @demigod)
+    assert_equal(false, Thing.indulge?(@owner, :update))
   end
     
   def test_indulge_other_thing
@@ -115,6 +142,12 @@ class ThingTest < Test::Unit::TestCase
     assert_equal(false, @thing.permit?(@owner, :read))
     assert_equal(false, @thing.permit?(@owner, :delete))
     assert_equal(false, @other_thing.permit?(@owner, :delete))
+  end
+
+  def test_aliased_class_compare_single_method
+    assert_equal(false, Thing.permit?(@owner, :read))
+    @owner.update_attribute(:role, @god)
+    assert_equal(true, Thing.permit?(@owner, :read))
   end
   
   def test_aliased_filter_many_method

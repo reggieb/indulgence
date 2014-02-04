@@ -13,6 +13,7 @@ module ActiveRecord
           
           alias_method args[:compare_single_method], :indulge? if args[:compare_single_method]
           singleton_class.send(:alias_method, args[:filter_many_method], :indulgence) if args[:filter_many_method]
+          singleton_class.send(:alias_method, args[:compare_single_method], :indulge?) if args[:compare_single_method]
           self.indulgent_permission_class = args[:using]
         end
         

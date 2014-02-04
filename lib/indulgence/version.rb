@@ -1,9 +1,11 @@
 module Indulgence
-  VERSION = "0.0.6"
+  VERSION = "0.0.7"
 end
 
 # History
 # =======
+#
+# 0.0.7   Adds Thing.indulge? class method.
 #
 # 0.0.6   Specifies the default behaviour as assigning the none ability to
 #         all CRUD actions.

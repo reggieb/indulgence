@@ -88,6 +88,13 @@ Simple true/false permission can be determined using the :indulge? method:
     thing.indulge?(user, :update) == false
     thing.indulge?(user, :delete) == false
 
+=== indulge? as a class method
+
+There is also a class :indulge? method. Calling this is the equivalent to
+calling :indulge? on a new object.
+
+    Thing.indulge?(user, :create) == Thing.new.indulge?(user, :create)
+
 == Filter many: indulgence
 
 The :indulgence method is used as a where filter:
@@ -251,6 +258,22 @@ With that done:
     Thing.indulgence(cicero, :update) == [thing]
     Thing.indulgence(cicero, :delete)  --> raises ActiveRecord::RecordNotFound
 
+Notice how Thing.indulge? behaves:
+
+    Thing.indulge?(cicero, :create) == false
+
+Thing.indulge? acts on a new instance of Thing where author_id will not be set.
+If this is not the behaviour expected, the permission may need to be checked
+at a stage after initialization, but before persisting:
+
+    thing = Thing.new(author: user)
+    if thing.indulge?(user, :create)
+      thing.save 
+    end
+
+In this example, the thing will be saved if the user is cicero, but not if
+the user has the role 'pleb'.
+
 === Defining your own actions
 
 The default actions on which indulgence is based are the CRUD operations: 
@@ -344,6 +367,8 @@ With this used to define indulgence in Thing, we can do this:
 
     thing.permit?(cicero, :update) == true
     thing.permit?(cicero, :delete) == false
+
+    Thing.permit?(cicero, :update) == false
 
     Thing.permitted(cicero, :create) == [thing]
     Thing.permitted(cicero, :read)   == Thing.all

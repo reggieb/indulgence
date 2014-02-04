@@ -8,6 +8,10 @@ module Indulgence
       rescue Indulgence::NotFoundError, Indulgence::AbilityNotFound
         raise_not_found
       end
+
+      def indulge?(entity, ability)
+        new.indulge?(entity, ability)
+      end
       
       private
       def raise_not_found
