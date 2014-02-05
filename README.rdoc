@@ -373,6 +373,13 @@ With this used to define indulgence in Thing, we can do this:
     Thing.permitted(cicero, :create) == [thing]
     Thing.permitted(cicero, :read)   == Thing.all
 
+== Null entities
+
+Indulgence falls back to the *none* ability if _nil_ is passed as the entity.
+
+    thing.indule?(nil, :read) == false
+    Thing.indulgence(nil, :read) --> raises ActiveRecord::RecordNotFound
+
 == Examples
 
 For some examples, have a look at the tests. In particular, look at the object

@@ -13,13 +13,17 @@ module Indulgence
       {}
     end
     
-    def default
+    def null_entity
       {
         create: none,
         read: none,
         update: none,
         delete: none
       }
+    end
+
+    def default
+      null_entity
     end
     
     def filter_many(things)
@@ -80,6 +84,7 @@ module Indulgence
     end
     
     def abilities_for_role
+      return null_entity unless entity
       abilities[role_name] || default
     end
 

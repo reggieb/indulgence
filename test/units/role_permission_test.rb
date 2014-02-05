@@ -20,6 +20,17 @@ class RolePermissionTest < Test::Unit::TestCase
       Role.indulgence(@user, :delete)
     end
   end
+
+  def test_null_entity_indulge
+    assert_equal(false, @role.indulge?(nil, :update))
+    assert_not_equal(@role.indulge?(@user, :update), @role.indulge?(nil, :update))
+  end
+
+  def test_null_entity_indulgence
+    assert_raise ActiveRecord::RecordNotFound do
+      assert_equal(0, Role.indulgence(nil, :update).count)
+    end
+  end
   
   def teardown
     User.delete_all

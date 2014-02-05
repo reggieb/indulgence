@@ -25,5 +25,10 @@ module Indulgence
       assert_equal Ability, Permission.send(:ability_cache)[:test_ability].class
     end
 
+    def test_creation_with_null_entity
+      permission = Permission.new(nil, :read)
+      assert_equal Permission.none, permission.ability
+    end
+
   end
 end

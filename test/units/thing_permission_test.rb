@@ -29,6 +29,13 @@ class ThingPermissionTest < Test::Unit::TestCase
     assert_equal Permission.none, ThingPermission.new(@user, :update).ability
     assert_equal Permission.none, ThingPermission.new(@user, :delete).ability 
   end
+
+  def test_null_entity
+    assert_equal Permission.none, ThingPermission.new(nil, :create).ability
+    assert_equal Permission.none, ThingPermission.new(nil, :read).ability
+    assert_equal Permission.none, ThingPermission.new(nil, :update).ability
+    assert_equal Permission.none, ThingPermission.new(nil, :delete).ability
+  end
   
   def test_role_name
     assert_equal @super_user.role.name.to_sym, ThingPermission.new(@super_user, :read).role_name

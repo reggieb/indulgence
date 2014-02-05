@@ -1,9 +1,13 @@
 module Indulgence
-  VERSION = "0.0.7"
+  VERSION = "0.1.0"
 end
 
 # History
 # =======
+#
+# 0.1.0   Handles a nil entity being passed to either indulge? or indulgence.
+#         Code now tried and tested in a number of applications, so
+#         bumping up to 0.1.
 #
 # 0.0.7   Adds Thing.indulge? class method.
 #
