@@ -380,6 +380,81 @@ Indulgence falls back to the *none* ability if _nil_ is passed as the entity.
     thing.indule?(nil, :read) == false
     Thing.indulgence(nil, :read) --> raises ActiveRecord::RecordNotFound
 
+== Basing permissions on an objects state rather than a user's role
+
+A work process goes through a number of stages. Instead of permissions needing
+to change depending on a user's role, it may be required that permissions 
+are dependent of the process stage. To achieve this, the association between
+the host object and it's permission class would need to change. Rather than
+associating the work process to its permission via acts_as_indulgent, the
+indulge? and indulgence methods would need to be created directly:
+
+    class WorkProcess < ActiveRecord::Base
+
+      def indulge?(user, ability)
+        permission = WorkProcessPermission.new(user, ability, self.stage)
+        permission.compare_single self
+      end
+
+      def self.indulgence(user, ability, stage_name)
+        permission = WorkProcessPermission.new(user, ability, stage_name)
+        permission.filter_many(self).where(:stage => stage_name)
+
+      rescue Indulgence::NotFoundError, Indulgence::AbilityNotFound
+        raise ActiveRecord::RecordNotFound.new('Unable to find the item(s) you were looking for')
+      end
+
+    end
+
+With that in place, abilities would need to defined by each stage name rather
+than each user role. So:
+
+    class WorkProcessPermission < Indulgence::Permission
+
+      def abilities
+        {
+          beginning: beginning,
+          middle: middle,
+          finish: finish
+        }
+      end
+
+      def beginning
+        {
+          create: all,
+          read: all,
+          update: none,
+          delete: all
+        }
+      end
+
+      def middle
+        {
+          create: none,
+          read: all,
+          update: all,
+          delete: all
+        }
+      end
+
+      def finish
+        {
+          create: none,
+          read: all,
+          update: none,
+          delete: none
+        }
+      end
+
+    end
+
+With that in place:
+
+    work_process = WorkProcess.create(stage: 'beginning')
+    work_process.indulge?(user, :create) == true
+    work_process.indulge?(user, :update) == false
+    WorkProcess.indulgence(user, :create, :beginning) == [work_process]
+
 == Examples
 
 For some examples, have a look at the tests. In particular, look at the object

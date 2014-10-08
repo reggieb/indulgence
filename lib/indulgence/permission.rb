@@ -2,9 +2,10 @@ module Indulgence
   class Permission
     attr_reader :entity, :ability
 
-    def initialize(entity, ability)
+    def initialize(entity, ability, role_method = nil)
       self
       @entity = entity
+      @role_name = role_method.to_sym if role_method
       @ability = abilities_for_role[ability]
       raise AbilityNotFound, "Unable to find an ability called #{ability}" unless @ability
     end

@@ -11,3 +11,10 @@ end
 require 'standalone_migrations'
 StandaloneMigrations::Tasks.load_tasks
 
+task :console do
+  require 'irb'
+  require 'irb/completion'
+  require 'indulgence' 
+  ARGV.clear
+  IRB.start
+end

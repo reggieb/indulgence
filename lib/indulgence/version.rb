@@ -1,9 +1,12 @@
 module Indulgence
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 end
 
 # History
 # =======
+# 
+# 0.1.1   Makes it easier to use the state of an object to determine permissions
+#         rather than a user's role.
 #
 # 0.1.0   Handles a nil entity being passed to either indulge? or indulgence.
 #         Code now tried and tested in a number of applications, so
