@@ -380,7 +380,7 @@ Indulgence falls back to the *none* ability if _nil_ is passed as the entity.
     thing.indule?(nil, :read) == false
     Thing.indulgence(nil, :read) --> raises ActiveRecord::RecordNotFound
 
-== Basing permissions on an objects state rather than a user's role
+== Basing permissions on an object's state rather than a user's role
 
 A work process goes through a number of stages. Instead of permissions needing
 to change depending on a user's role, it may be required that permissions 
