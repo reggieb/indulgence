@@ -1,9 +1,13 @@
 module Indulgence
-  VERSION = "0.1.1"
+  VERSION = "0.1.2"
 end
 
 # History
 # =======
+#
+# 0.1.2   Adds strict mode - to allow more flexible use (if a none user object
+#         is passed to indulge?, in strict mode a no method error is raised. When
+#         indulgence.strict = false, indulge? will use the default abilities)
 # 
 # 0.1.1   Makes it easier to use the state of an object to determine permissions
 #         rather than a user's role.

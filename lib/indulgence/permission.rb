@@ -91,12 +91,18 @@ module Indulgence
 
     private
     def entity_role_name
-      role = entity.send(self.class.role_method)
-      name_method = self.class.role_name_method
-      if role and abilities.keys.include?(role.send(name_method).to_sym)
-        role.send(name_method).to_sym
+      role = entity.send(self.class.role_method) if entity_has_role_method
+      if role and abilities.keys.include?(role.send(role_name_method).to_sym)
+        role.send(role_name_method).to_sym
       else
         :default
+      end
+    end
+
+    def entity_has_role_method
+      return true if entity.respond_to?(self.class.role_method)
+      if Indulgence.strict?
+        raise NoMethodError.new("#{entity} has no role method '#{role_name_method}'. Unable to process #{self.class}")
       end
     end
 
@@ -106,7 +112,11 @@ module Indulgence
 
     def none
       self.class.none
-    end 
+    end
+
+    def role_name_method
+      self.class.role_name_method
+    end
     
     def self.ability_cache
       @ability_cache ||= {}

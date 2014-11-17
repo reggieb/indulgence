@@ -1,5 +1,6 @@
 require_relative '../../test_helper'
 require 'user'
+require 'indulgence'
 require 'permission'
 require 'ability'
 
@@ -28,6 +29,14 @@ module Indulgence
     def test_creation_with_null_entity
       permission = Permission.new(nil, :read)
       assert_equal Permission.none, permission.ability
+    end
+
+    def test_creation_with_entity_that_does_not_respond_to_role
+      before = Indulgence.strict?
+      Indulgence.strict = false
+      permission = Permission.new([], :read)
+      assert_equal Permission.none, permission.ability
+      Indulgence.strict = before
     end
 
   end

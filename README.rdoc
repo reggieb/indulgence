@@ -455,6 +455,36 @@ With that in place:
     work_process.indulge?(user, :update) == false
     WorkProcess.indulgence(user, :create, :beginning) == [work_process]
 
+== Strict mode
+
+Imagine we have a Dog class:
+
+    class Dog
+    end
+
+And we use a dog as an entity:
+
+    fido = Dog.new
+    thing.indulge? fido, :edit
+
+There are two ways that we may want indulgence to behave:
+* go bang;
+* or handle the problem as if the entity has no role (that is: return the default abilities.)
+
+The default behaviour is to raise a method not found error. However, if
+Indulgence.strict = false, the response will match the default ability:
+
+    Indulgence.strict = true  # default
+    thing.indulge?(fido, :edit) ---> Raises No Method Error
+
+    Indulgence.strict = false
+    thing.indulge?(fido, :edit) == false
+    thing.indulge?(fido, :read) == true
+
+That is, in Strict mode, Indulgence will expect an entity to behave like a user
+with roles, and will go bang if this is no the case. It strict mode is turned
+off, Indulgence will make a best effort to guess how to behave.
+
 == Examples
 
 For some examples, have a look at the tests. In particular, look at the object
