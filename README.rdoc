@@ -118,7 +118,7 @@ Let's give Emperors the right to see and do anything by first creating an empero
     emperor = Role.create(:name => 'emperor')
     caesar = User.create(
       :first_name => 'Julius', 
-      :last_name => 'Ceasar',
+      :last_name => 'Caesar',
       :role => emperor
     )
 
