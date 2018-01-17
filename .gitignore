@@ -2,3 +2,4 @@
 .ruby-*
 test/db/*.db
 *.gem
+Gemfile.lock

@@ -2,7 +2,7 @@ require_relative '../test_helper'
 require 'user'
 require 'role'
 
-class RoleTest < Test::Unit::TestCase
+class RoleTest < Minitest::Test
   def teardown
     User.delete_all
     Role.delete_all

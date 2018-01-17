@@ -3,7 +3,7 @@ require 'user'
 require 'role'
 require 'thing_permission'
 
-class ThingPermissionTest < Test::Unit::TestCase
+class ThingPermissionTest < Minitest::Test
   
   Permission = Indulgence::Permission
   
@@ -47,7 +47,7 @@ class ThingPermissionTest < Test::Unit::TestCase
   
   def test_setting_unknown_role_method_causes_error
     Permission.role_method = :something_else
-    assert_raise NoMethodError do
+    assert_raises NoMethodError do
       ThingPermission.new(@super_user, :read).role_name
     end
   end
@@ -59,7 +59,7 @@ class ThingPermissionTest < Test::Unit::TestCase
   
   def test_setting_unknown_role_name_method_causes_error
     Permission.role_name_method = :something_else
-    assert_raise NoMethodError do
+    assert_raises NoMethodError do
       ThingPermission.new(@super_user, :read).role_name
     end
   end
@@ -70,7 +70,7 @@ class ThingPermissionTest < Test::Unit::TestCase
   end
   
   def test_with_unspecified_ability
-    assert_raise Indulgence::AbilityNotFound do
+    assert_raises Indulgence::AbilityNotFound do
       ThingPermission.new(@user, :unspecified)
     end
   end

@@ -1,7 +1,7 @@
 
 module Indulgence
   module AbilityTests
-    class MethodOnly < Test::Unit::TestCase
+    class MethodOnly < Minitest::Test
 
       def setup
         @attributes = {
@@ -28,7 +28,7 @@ module Indulgence
       end
       
       def assert_initiation_raises_error
-        assert_raise AbilityConfigurationError do
+        assert_raises AbilityConfigurationError do
           Ability.new(@attributes)
         end
       end

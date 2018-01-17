@@ -3,7 +3,7 @@ require 'user'
 require 'work_process'
 require 'work_process_permission'
 
-class WorkProcessTest < Test::Unit::TestCase
+class WorkProcessTest < Minitest::Test
   
   def teardown
     User.delete_all
@@ -49,7 +49,7 @@ class WorkProcessTest < Test::Unit::TestCase
   end
   
   def test_indulgence_when_not_permitted
-    assert_raise ActiveRecord::RecordNotFound do
+    assert_raises ActiveRecord::RecordNotFound do
       WorkProcess.indulgence(user, :update, :beginning)
     end
   end

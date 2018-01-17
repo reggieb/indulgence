@@ -5,7 +5,7 @@ require 'permission'
 require 'ability'
 
 module Indulgence
-  class PermissionTest < Test::Unit::TestCase
+  class PermissionTest < Minitest::Test
     
     def test_creation
       permission = Permission.new(User.create(:name => 'Whisp'), :read)

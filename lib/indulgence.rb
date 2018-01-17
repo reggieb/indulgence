@@ -6,7 +6,7 @@ require_relative 'active_record/acts/indulgent'
 
 module Indulgence
   def self.strict?
-    @strict.nil? || @strict
+    !instance_variable_defined?(:@strict) || @strict
   end
 
   def self.strict=(boolean)
